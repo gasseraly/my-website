@@ -4,18 +4,7 @@ includes:
 parameters:
     level: 5
     paths:
-        - app/
-        - routes/
+        - app
+        - routes
+        - tests
 
-    excludePaths:
-        - app/Console/Kernel.php
-        - bootstrap/
-        - storage/
-        - vendor/
-
-    checkMissingIterableValueType: false
-    reportUnmatchedIgnoredErrors: false
-
-    ignoreErrors:
-        - '#Call to an undefined method App\\Models\\.*::[a-zA-Z0-9_]+\(\)#'
-        - '#Access to an undefined property App\\Models\\.*::\$[a-zA-Z0-9_]+#'

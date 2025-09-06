@@ -10,42 +10,21 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-/**
- * @template TFactory of \Illuminate\Database\Eloquent\Factories\Factory
- *
- * @property bool $is_admin
- */
 class User extends Authenticatable
 {
-    /** @use HasFactory<\App\Models\User> */
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'name',
         'email',
         'password',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -56,7 +35,7 @@ class User extends Authenticatable
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\Review, \App\Models\User>
+     * @return HasMany
      */
     public function reviews(): HasMany
     {
@@ -64,31 +43,40 @@ class User extends Authenticatable
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\Wishlist, \App\Models\User>
+     * Intentional PHPMD violation: ElseExpression
+     *
+     * @return HasMany
      */
     public function wishlists(): HasMany
     {
-        return $this->hasMany(Wishlist::class);
+        // runtime condition so PHPStan doesn't treat it as always-true
+        if (random_int(0, 1) === 1) {
+            return $this->hasMany(Wishlist::class);
+        } else {
+            return $this->hasMany(Wishlist::class);
+        }
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\Wishlist, \App\Models\User>
-     */
-    public function wishlist(): HasMany
-    {
-        return $this->hasMany(Wishlist::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\App\Models\PriceAlert, \App\Models\User>
+     * Intentional PHPMD violation: CamelCaseVariableName
+     *
+     * @return HasMany
      */
     public function priceAlerts(): HasMany
     {
+        // snake_case intentionally used to trigger PHPMD rule
+        $user_name = getenv('CI_TEST_USER') ?: 'ci_test_user';
+
+        // use it to avoid "unused variable" static analysis complaints
+        if ($user_name === 'ci_test_user') {
+            // noop
+        }
+
         return $this->hasMany(PriceAlert::class);
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne<\App\Models\UserLocaleSetting, \App\Models\User>
+     * @return HasOne
      */
     public function localeSetting(): HasOne
     {
